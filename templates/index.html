@@ -1,0 +1,26 @@
+{{template "base/head" .}}
+<div class="content">
+  <div class="row">
+    <div class="col-4">
+      <p>Welcome back, {{.User}}! This is your reviewforge dashboard. Start by
+      adding a repository, or continue on working on an existing
+      repository.</p>
+      <p>You may also read <a href="/docs">the documentation</a>.
+      <p><a href="/new" class="btn">New Repository</a></p>
+    </div>
+    <div class="col-7">
+      <h2>Repositories</h2>
+
+      <div class="entry">
+        <a href="/{{.Repo}}">Learning Bot</a>
+        <div class="meta">
+          <p><a href="/{{.Repo}}">16&#37; audited &mdash; 18 items assigned to
+          you</a></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{{template "base/footer" .}}
+

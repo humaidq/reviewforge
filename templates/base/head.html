@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/css/normalize-8.0.1.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <title>{{if .Title}}{{ .Title }} - {{end}}{{.SiteTitle}}</title>
+    </head>
+    <body>
+        <div class="container">
+            <nav>
+              <ul>
+                <li><a href="/" class="nav-title">{{.SiteTitle}}</a></li>
+                <li class="nav-right">Logged in as <a
+                    href="/profile">{{.User}}</a> &mdash; <a
+                    href="/logout">Logout</a></li>
+              </ul>
+            </nav>

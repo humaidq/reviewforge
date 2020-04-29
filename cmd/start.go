@@ -9,8 +9,12 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/go-macaron/csrf"
+	"github.com/go-macaron/session"
 	"github.com/urfave/cli/v2"
-	"gopkg.in/macaron.v1"
+	macaron "gopkg.in/macaron.v1"
+
+	"git.sr.ht/~humaid/reviewforge/routes"
 )
 
 // CmdStart represents a command-line command
@@ -36,8 +40,13 @@ var CmdStart = &cli.Command{
 
 func getMacaron(dev bool) *macaron.Macaron {
 	m := macaron.Classic()
+	m.Use(macaron.Renderer())
+	m.Use(session.Sessioner())
+	m.Use(csrf.Csrfer())
+	m.Use(routes.ContextInit())
+	m.Get("/", routes.DashboardHandler)
+	m.Get("/new", routes.AddRepoHandler)
 	return m
-
 }
 
 func start(clx *cli.Context) (err error) {
