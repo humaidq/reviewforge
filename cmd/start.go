@@ -1,0 +1,69 @@
+package cmd
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"time"
+
+	"github.com/urfave/cli/v2"
+	"gopkg.in/macaron.v1"
+)
+
+// CmdStart represents a command-line command
+// which starts the code review system
+var CmdStart = &cli.Command{
+	Name:    "start",
+	Aliases: []string{"run"},
+	Usage:   "Start the code review system's server",
+	Flags: []cli.Flag{
+		&cli.StringFlag{
+			Name:  "port",
+			Value: "8080",
+			Usage: "the web server port",
+		},
+		&cli.BoolFlag{
+			Name:  "dev",
+			Value: false,
+			Usage: "enables development mode (for templates)",
+		},
+	},
+	Action: start,
+}
+
+func getMacaron(dev bool) *macaron.Macaron {
+	m := macaron.Classic()
+	return m
+
+}
+
+func start(clx *cli.Context) (err error) {
+	// TODO load config
+	// TODO setup database
+
+	log.Printf("Starting TLS web server on :%s\n", clx.String("port"))
+	m := getMacaron(clx.Bool("dev"))
+	server := &http.Server{Addr: fmt.Sprintf(":%s", clx.String("port")), Handler: m}
+	go func() {
+		log.Fatal(server.ListenAndServe())
+	}()
+
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := server.Shutdown(ctx); err != nil {
+			panic(err)
+		}
+		time.Sleep(500 * time.Millisecond)
+	}()
+	// defer close whatever here
+
+	// Capture system interrupt
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt)
+	<-stop
+	return nil
+}
