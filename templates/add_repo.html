@@ -8,9 +8,25 @@
         <input type="text" id="name" name="name" required="1" autofocus="1">
       </div>
       <div class="form-group">
-        <label for="repo">Repository Git Remote</label>
+        <label for="repo">Git repository URL</label>
         <input type="text" id="repo" name="repo" required="1" placeholder="https://git.sr.ht/~humaid/reviewforge">
       </div>
+      <div class="form-group">
+        <label for="user">Username (optional)</label>
+        <input type="text" id="user" name="user">
+      </div>
+      <div class="form-group">
+        <label for="pass">Password (optional)</label>
+        <input type="text" id="pass" name="pass">
+      </div>
+
+      <div class="alert alert-grey">
+        <p><b>Note</b> If you are cloning from a private GitLab/GitHub
+        repository, you may use your personal access token in the place of the
+        password.</p>
+        <p>The credentials wil not be stored.</p>
+      </div>
+
       <div class="form-group">
         <label for="vis">Visibility</label>
         <div class="check">
@@ -22,10 +38,6 @@
       </div>
       <input type="hidden" name="_csrf" value="{{.csrf_token}}">
       <button type="submit" class="btn">Clone &rarr;</button>
-      <div class="alert alert-grey">
-        <p><b>P.S.</b> You get to select the branch/tag and static analysis tools in the
-        next steps. Members could be invited later.</p>
-      </div>
     </div>
 
   </form>
