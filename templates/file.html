@@ -1,0 +1,14 @@
+{{template "base/head" .}}
+<div class="content">
+  <h2>{{.Repo.Name}}</h2>
+  {{.File}}
+  {{if .IsRoot}}
+  <h3>Assigned</h3>
+  <p>The following are all files/directories assigned to you.</p>
+  {{end}}
+</div>
+<style>
+{{.CSS}}
+</style>
+{{template "base/footer" .}}
+

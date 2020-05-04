@@ -352,3 +352,15 @@ nav ul li a:focus {
     flex: 0 0 100%;
   }
 }
+
+/* Source listing */
+.tree {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto auto auto;
+  font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
+
+.tree div {
+    padding: .1rem .5rem;
+    border-bottom: 1px solid #999;
+}

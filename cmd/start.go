@@ -9,11 +9,14 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/go-macaron/binding"
 	"github.com/go-macaron/csrf"
 	"github.com/go-macaron/session"
 	"github.com/urfave/cli/v2"
 	macaron "gopkg.in/macaron.v1"
 
+	"git.sr.ht/~humaid/reviewforge/models"
+	"git.sr.ht/~humaid/reviewforge/models/forms"
 	"git.sr.ht/~humaid/reviewforge/routes"
 )
 
@@ -44,14 +47,27 @@ func getMacaron(dev bool) *macaron.Macaron {
 	m.Use(session.Sessioner())
 	m.Use(csrf.Csrfer())
 	m.Use(routes.ContextInit())
+
 	m.Get("/", routes.DashboardHandler)
 	m.Get("/new", routes.AddRepoHandler)
+	m.Post("/new", binding.BindIgnErr(forms.AddRepositoryForm{}), routes.AddRepoPostHandler)
+	m.Get("/:id", routes.RepoHandler)
+	m.Get("/:id/*", routes.RepoHandler)
 	return m
 }
 
 func start(clx *cli.Context) (err error) {
 	// TODO load config
 	// TODO setup database
+	if _, err := os.Stat("./repos"); os.IsNotExist(err) {
+		err := os.Mkdir("./repos", os.ModePerm)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	e := models.SetupEngine()
+	defer e.Close()
 
 	log.Printf("Starting TLS web server on :%s\n", clx.String("port"))
 	m := getMacaron(clx.Bool("dev"))
