@@ -1,25 +1,31 @@
 {{template "base/head" .}}
 <div class="content">
-  <h2>{{.Repo.Name}}</h2>
+  <h2><a href="/{{.Repo.ID}}">{{.Repo.Name}}</a></h2>
   {{if .IsRoot}}
   <h3>Assigned</h3>
   <p>The following are all files/directories assigned to you.</p>
   {{end}}
   <h3>Tree</h3>
   <div class="tree">
+    <div class="assign"></div>
+    <div class="name">{{.Path}}</div>
+    <div class="complexity">Complexity</div>
+    <div class="issues">Issues</div>
+    <div class="size">Size</div>
     {{range .Files}}
-    <div class="assign"><a href="">A</a></div>
-    <div class="mode">{{.Mode}}</div>
+    <div class="assign">{{if .IsDir}}D{{else}}F{{end}}</div>
     <div class="name"><a href="{{.Name}}">{{.Name}}</a></div>
     <div class="complexity">{{.Complexity}}</div>
     <div class="issues">{{.Issues}}</div>
     <div class="size">{{.Size}}</div>
     {{end}}
   </div>
-  <h3>Description <small>(README)</small></h3>
+  {{if .Readme}}
   <div class="readme">
+  <h3 class="readme-title">README.md</h3>
     {{.Readme}}
   </div>
+  {{end}}
 </div>
 {{template "base/footer" .}}
 

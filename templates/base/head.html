@@ -9,12 +9,16 @@
     </head>
     <body>
         <div class="container">
-            <nav>
-              <ul>
-                <li><a href="/" class="nav-title">{{.SiteTitle}}</a></li>
-                <li class="nav-right">Logged in as <a
+          <div class="nav">
+            <div class="nav-left">
+              <a href="/" class="nav-title"><img src="/img/icon.png"
+                  class="logo" title="{{.RandNote}}" />
+                <span class="nav-extra">{{.SiteTitle}}</span></a>
+            </div>
+            <div class="nav-right">
+              {{if .LoggedIn}}Logged in as <a
                     href="/profile">{{.User}}</a> &mdash; <a
-                    href="/logout">Logout</a></li>
-              </ul>
-            </nav>
+                    href="/logout">Logout</a>{{else}}<a href="/login">Login</a>{{end}}
+            </div>
+          </div>
             {{ template "base/flash" . }}

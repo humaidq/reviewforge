@@ -38,18 +38,26 @@ func ContextInit() macaron.Handler {
 }
 
 func DashboardHandler(ctx *macaron.Context) {
+	ctx.Data["Title"] = "Dashboard"
+	repos, err := models.GetRepositories()
+	if err != nil {
+		panic(err)
+	}
+	ctx.Data["Repos"] = repos
 	ctx.HTML(http.StatusOK, "index")
 }
 
 func AddRepoHandler(ctx *macaron.Context) {
+	ctx.Data["Title"] = "Add a new repository"
 	ctx.HTML(http.StatusOK, "add_repo")
 }
 
 type DirEntry struct {
 	Mode, Name, Complexity, Issues, Size string
+	IsDir                                bool
 }
 
-func RepoHandler(ctx *macaron.Context) {
+func RepoHandler(ctx *macaron.Context, f *session.Flash) {
 	repo, err := models.GetRepository(ctx.ParamsInt64("id"))
 	if err != nil {
 		ctx.Redirect("/")
@@ -72,6 +80,7 @@ func RepoHandler(ctx *macaron.Context) {
 			return
 		}
 		if st.IsDir() {
+			ctx.Data["Path"] = "/" + path.Clean(ctx.Params("*"))
 			files, err = ioutil.ReadDir(file)
 			entries = append(entries, DirEntry{
 				Mode:       st.Mode().String(),
@@ -79,6 +88,7 @@ func RepoHandler(ctx *macaron.Context) {
 				Complexity: "",
 				Issues:     "",
 				Size:       fmt.Sprintf("%d", st.Size()),
+				IsDir:      true,
 			})
 		} else {
 			// We are viewing a file...
@@ -112,10 +122,14 @@ func RepoHandler(ctx *macaron.Context) {
 			return
 		}
 	} else {
+		ctx.Data["Path"] = "/"
 		files, err = ioutil.ReadDir("./repos/" + repo.Name)
 	}
 	if err != nil {
-		log.Fatal(err)
+		f.Error("Failed to load repository")
+		log.Println("Cannot load repo: ", err)
+		ctx.Redirect("/")
+		return
 	}
 
 	for _, f := range files {
@@ -128,6 +142,7 @@ func RepoHandler(ctx *macaron.Context) {
 			Complexity: "0",
 			Issues:     "0",
 			Size:       fmt.Sprintf("%d", f.Size()),
+			IsDir:      f.IsDir(),
 		})
 	}
 	ctx.Data["Files"] = entries

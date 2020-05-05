@@ -10,14 +10,16 @@
     </div>
     <div class="col-7">
       <h2>Repositories</h2>
-
+    
+      {{range .Repos}}
       <div class="entry">
-        <a href="/{{.Repo}}">Learning Bot</a>
+        <a href="/{{.ID}}">{{.Name}}</a>
         <div class="meta">
-          <p><a href="/{{.Repo}}">16&#37; audited &mdash; 18 items assigned to
+          <p><a href="/{{.ID}}">16&#37; audited &mdash; 18 items assigned to
           you</a></p>
         </div>
       </div>
+      {{end}}
 
     </div>
   </div>
