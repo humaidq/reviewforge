@@ -68,6 +68,7 @@ func RepoHandler(ctx *macaron.Context, f *session.Flash) {
 		return
 	}
 	var entries []DirEntry
+	var backDirEntry *DirEntry
 
 	ctx.Data["Repo"] = repo
 	var files []os.FileInfo
@@ -82,14 +83,14 @@ func RepoHandler(ctx *macaron.Context, f *session.Flash) {
 		if st.IsDir() {
 			ctx.Data["Path"] = "/" + path.Clean(ctx.Params("*"))
 			files, err = ioutil.ReadDir(file)
-			entries = append(entries, DirEntry{
+			backDirEntry = &DirEntry{
 				Mode:       st.Mode().String(),
 				Name:       "..",
 				Complexity: "",
 				Issues:     "",
 				Size:       fmt.Sprintf("%d", st.Size()),
 				IsDir:      true,
-			})
+			}
 		} else {
 			// We are viewing a file...
 			contents, err := ioutil.ReadFile(file)
@@ -136,14 +137,22 @@ func RepoHandler(ctx *macaron.Context, f *session.Flash) {
 		if f.Name() == ".git" {
 			continue
 		}
-		entries = append(entries, DirEntry{
+		ent := DirEntry{
 			Mode:       f.Mode().String(),
 			Name:       f.Name(),
 			Complexity: "0",
 			Issues:     "0",
 			Size:       fmt.Sprintf("%d", f.Size()),
 			IsDir:      f.IsDir(),
-		})
+		}
+		if f.IsDir() {
+			entries = append([]DirEntry{ent}, entries...)
+		} else {
+			entries = append(entries, ent)
+		}
+	}
+	if backDirEntry != nil {
+		entries = append([]DirEntry{*backDirEntry}, entries...)
 	}
 	ctx.Data["Files"] = entries
 

@@ -53,6 +53,7 @@ a {
 
 pre {
 	margin: 0;
+  word-wrap: break-word;
 }
 
 
