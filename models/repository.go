@@ -4,11 +4,11 @@ import "errors"
 
 // Repository represents a repository being audited
 type Repository struct {
-	ID          int64 `xorm:"pk autoincr"`
-	Name        string
-	GitRemote   string
-	OwnerUserID string
-	Auditors    []string
+	RepositoryID int64 `xorm:"pk autoincr"`
+	Name         string
+	GitRemote    string
+	OwnerUserID  string
+	Auditors     []string
 }
 
 func GetRepository(id int64) (*Repository, error) {
@@ -17,7 +17,7 @@ func GetRepository(id int64) (*Repository, error) {
 	if err != nil {
 		return r, err
 	} else if !has {
-		return r, errors.New("Room does not exist")
+		return r, errors.New("Repository does not exist")
 	}
 	return r, nil
 }
