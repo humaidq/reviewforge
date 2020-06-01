@@ -1,6 +1,7 @@
 package analysers
 
 type Analyser interface {
+	GetInfo() AnalyserInfo
 	HasTool() bool
 	Run(path string) []Issue
 }
@@ -36,6 +37,7 @@ const (
 
 type AnalyserInfo struct {
 	Name, Version      string
+	URL                string
 	LanguagesSupported []ProgrammingLanguage
 }
 
