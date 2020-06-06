@@ -3,7 +3,7 @@ package analysers
 type Analyser interface {
 	GetInfo() AnalyserInfo
 	HasTool() bool
-	Run(path string) []Issue
+	Run(path string) ([]Issue, error)
 }
 
 type ProgrammingLanguage int
@@ -43,10 +43,11 @@ type AnalyserInfo struct {
 
 type Issue struct {
 	FilePath     string
-	LineNumber   uint
-	ColumnNumber uint
+	LineNumber   uint64
+	ColumnNumber uint64
 	CheckName    string
+	Category     string // Optional
 	Description  string
-	CVE          string
-	Serverity    int
+	CVE          string // Optional, for exploits
+	Serverity    int    // Optional, for exploits TODO make this an enum
 }
