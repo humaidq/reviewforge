@@ -77,7 +77,7 @@ func RepoHandler(ctx *macaron.Context, f *session.Flash) {
 		file := "./repos/" + repo.Name + "/" + path.Clean(ctx.Params("*"))
 		st, err := os.Stat(file)
 		if err != nil {
-			ctx.Redirect(fmt.Sprintf("/%d", repo.ID))
+			ctx.Redirect(fmt.Sprintf("/%d", repo.RepositoryID))
 			return
 		}
 		if st.IsDir() {
@@ -220,5 +220,5 @@ func AddRepoPostHandler(ctx *macaron.Context, form forms.AddRepositoryForm,
 	}
 
 	models.AddRepository(&repo)
-	ctx.Redirect(fmt.Sprintf("/%d", repo.ID))
+	ctx.Redirect(fmt.Sprintf("/%d", repo.RepositoryID))
 }
