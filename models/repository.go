@@ -9,6 +9,7 @@ type Repository struct {
 	GitRemote    string
 	OwnerUserID  string
 	Auditors     []string
+	Assignment   map[string]string
 }
 
 func GetRepository(id int64) (*Repository, error) {

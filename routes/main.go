@@ -52,6 +52,44 @@ func AddRepoHandler(ctx *macaron.Context) {
 	ctx.HTML(http.StatusOK, "add_repo")
 }
 
+func listAllInDir(prefix string, path string) (dirs []string) {
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		fmt.Println(err)
+		return []string{}
+	}
+	for _, f := range files {
+		if f.Name() == ".git" {
+			continue
+		}
+		if f.IsDir() {
+			var newPrefix string
+			if prefix != "" {
+				newPrefix = prefix + "/"
+			}
+			dirs = append(dirs, listAllInDir(newPrefix+f.Name(), path+"/"+f.Name())...)
+		} else {
+			if prefix != "" {
+				dirs = append(dirs, prefix+"/"+f.Name())
+			} else {
+				dirs = append(dirs, f.Name())
+			}
+		}
+	}
+	return
+}
+
+func AssignRepoHandler(ctx *macaron.Context) {
+	repo, err := models.GetRepository(ctx.ParamsInt64("id"))
+	if err != nil {
+		ctx.Redirect("/")
+		return
+	}
+	ctx.Data["Title"] = "New assignment"
+	ctx.Data["Dirs"] = listAllInDir("", "./repos/"+repo.Name)
+	ctx.HTML(http.StatusOK, "new_assign")
+}
+
 type DirEntry struct {
 	Mode, Name, Complexity, Issues, Size string
 	IsDir                                bool
@@ -124,6 +162,7 @@ func RepoHandler(ctx *macaron.Context, f *session.Flash) {
 		}
 	} else {
 		ctx.Data["Path"] = "/"
+		ctx.Data["IsRoot"] = true
 		files, err = ioutil.ReadDir("./repos/" + repo.Name)
 	}
 	if err != nil {

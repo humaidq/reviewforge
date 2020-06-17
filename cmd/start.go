@@ -52,6 +52,7 @@ func getMacaron(dev bool) *macaron.Macaron {
 	m.Get("/new", routes.AddRepoHandler)
 	m.Post("/new", binding.BindIgnErr(forms.AddRepositoryForm{}), routes.AddRepoPostHandler)
 	m.Get("/:id", routes.RepoHandler)
+	m.Get("/:id/assign", routes.AssignRepoHandler)
 	m.Get("/:id/*", routes.RepoHandler)
 	return m
 }

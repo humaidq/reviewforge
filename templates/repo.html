@@ -1,7 +1,8 @@
 {{template "base/head" .}}
 <div class="content">
-  <h2><a href="/{{.Repo.ID}}">{{.Repo.Name}}</a></h2>
+  <h2><a href="/{{.Repo.RepositoryID}}">{{.Repo.Name}}</a></h2>
   {{if .IsRoot}}
+  <p><a href="/{{.Repo.RepositoryID}}/assign" class="btn">New Assignment</a></p>
   <h3>Assigned</h3>
   <p>The following are all files/directories assigned to you.</p>
   {{end}}
