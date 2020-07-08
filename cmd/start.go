@@ -15,6 +15,8 @@ import (
 	"github.com/urfave/cli/v2"
 	macaron "gopkg.in/macaron.v1"
 
+	"git.sr.ht/~humaid/reviewforge/analysers"
+	"git.sr.ht/~humaid/reviewforge/analysers/checkstyle"
 	"git.sr.ht/~humaid/reviewforge/models"
 	"git.sr.ht/~humaid/reviewforge/models/forms"
 	"git.sr.ht/~humaid/reviewforge/routes"
@@ -57,6 +59,10 @@ func getMacaron(dev bool) *macaron.Macaron {
 	return m
 }
 
+var analyserList = []interface{}{
+	checkstyle.CheckstyleTool{},
+}
+
 func start(clx *cli.Context) (err error) {
 	// TODO load config
 	// TODO setup database
@@ -65,6 +71,17 @@ func start(clx *cli.Context) (err error) {
 		if err != nil {
 			panic(err)
 		}
+	}
+
+	for _, a := range analyserList {
+		ana := a.(analysers.Analyser)
+		if !ana.HasTool() {
+			log.Printf("%s has no tool installed.\n", ana.GetInfo().Name)
+		}
+	}
+
+	if (analyserList[0].(analysers.Analyser)).HasTool() {
+
 	}
 
 	e := models.SetupEngine()

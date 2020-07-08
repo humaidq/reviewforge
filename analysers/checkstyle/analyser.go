@@ -1,4 +1,4 @@
-package dependency
+package checkstyle
 
 import (
 	"log"
@@ -21,7 +21,7 @@ func (c *CheckstyleTool) HasTool() bool {
 
 var (
 	// 0: Full, 1: [WARN] part, 2: Path, 3: Line number, 4: Column, 5: Message.
-	errorExp = regexp.MustCompile(`\[([A-Z]+)\] ([a-zA-Z0-9 _.\/]+):(\d+)(?>:(\d+))?: (.+)`)
+	errorExp = regexp.MustCompile(`\[([A-Z]+)\] ([a-zA-Z0-9 _.\/]+):(\d+)(:(\d+))?: (.+)`)
 )
 
 func parseCheckstyleOutput(output string, projPath string) (issues []analysers.Issue) {
